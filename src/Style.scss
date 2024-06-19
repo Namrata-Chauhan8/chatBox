@@ -241,6 +241,16 @@
                 height: calc(100% - 160px);
                 overflow: scroll;
 
+                .noMessages {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100%;
+                    color: gray;
+                    font-size: 32px;
+                }
+                
+
                 .message {
                     display: flex;
                     gap: 20px;
