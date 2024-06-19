@@ -145,12 +145,30 @@
                         object-fit: cover;
                     }
 
-                    button {
+                    .username {
+                        @include tablet {
+                            display: none;
+                        }
+                    }
+
+                    .logout {
                         background-color: #5d5b8d;
                         color: #ddddf7;
-                        font-size: 10px;
-                        border: none;
+                        // border: none;
                         cursor: pointer;
+                        height: 20px;
+                        width: 20px;
+                        background: transparent;
+
+                        @include tablet {
+                            position: absolute;
+                            bottom: 10px;
+                        }
+
+                        &:hover {
+                            background-color: #ddddf7;
+                            color: #5d5b8d;
+                        }
 
                         @include tablet {
                             position: absolute;
@@ -249,7 +267,7 @@
                     color: gray;
                     font-size: 32px;
                 }
-                
+
 
                 .message {
                     display: flex;
@@ -353,6 +371,11 @@
                         color: white;
                         background-color: #8da4f1;
                         cursor: pointer;
+
+                        &:disabled {
+                            opacity: 0.7;
+                            cursor: not-allowed;
+                        }
                     }
                 }
             }

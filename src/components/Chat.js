@@ -20,7 +20,7 @@ const Chat = () => {
         </div>
       </div>
       <Messages />
-      <Input />
+      {data.user?.displayName && <Input />}
     </div>
   );
 };

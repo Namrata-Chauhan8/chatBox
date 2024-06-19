@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import { MdAddPhotoAlternate } from "react-icons/md";
 import { GrAttachment } from "react-icons/gr";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
@@ -13,12 +12,10 @@ import {
 import { db, storage } from "../Firebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { v4 as uuid } from "uuid";
-import { useNavigate } from "react-router-dom";
 import EmojiPicker from "emoji-picker-react";
 import { GrEmoji } from "react-icons/gr";
 
 const Input = () => {
-  const navigate = useNavigate();
   const [text, setText] = useState("");
   const [img, setImage] = useState(null);
   const [open, setOpen] = useState(false);
@@ -32,54 +29,60 @@ const Input = () => {
   };
 
   const handleSend = async () => {
-    if (img) {
-      const storageRef = ref(storage, uuid());
+    try {
+      let imageUrl = null;
 
-      const uploadTask = uploadBytesResumable(storageRef, img);
+      if (img) {
+        const storageRef = ref(storage, uuid());
+        const uploadTask = uploadBytesResumable(storageRef, img);
 
-      uploadTask.on(
-        (error) => {},
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-            await updateDoc(doc(db, "chats", data.chatId), {
-              messages: arrayUnion({
-                id: uuid(),
-                text,
-                senderId: currentUser.uid,
-                date: Timestamp.now(),
-                img: downloadURL,
-              }),
-            });
-          });
-        }
-      );
-    } else {
+        await new Promise((resolve, reject) => {
+          uploadTask.on(
+            "state_changed",
+            null,
+            (error) => {
+              reject(error);
+            },
+            () => {
+              getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                imageUrl = downloadURL;
+                resolve();
+              });
+            }
+          );
+        });
+      }
+
+      const messageData = {
+        id: uuid(),
+        text,
+        senderId: currentUser.uid,
+        date: Timestamp.now(),
+      };
+
+      if (imageUrl) {
+        messageData.img = imageUrl;
+      }
+
       await updateDoc(doc(db, "chats", data.chatId), {
-        messages: arrayUnion({
-          id: uuid(),
-          text,
-          senderId: currentUser.uid,
-          date: Timestamp.now(),
-        }),
+        messages: arrayUnion(messageData),
       });
+
+      await updateDoc(doc(db, "userChats", currentUser.uid), {
+        [`${data.chatId}.lastMessage`]: { text },
+        [`${data.chatId}.date`]: serverTimestamp(),
+      });
+
+      await updateDoc(doc(db, "userChats", data.user.uid), {
+        [`${data.chatId}.lastMessage`]: { text },
+        [`${data.chatId}.date`]: serverTimestamp(),
+      });
+
+      setText("");
+      setImage(null);
+    } catch (error) {
+      console.error("Error sending message: ", error);
     }
-
-    await updateDoc(doc(db, "userChats", currentUser.uid), {
-      [data.chatId + ".lastMessage"]: {
-        text,
-      },
-      [data.chatId + ".date"]: serverTimestamp(),
-    });
-
-    await updateDoc(doc(db, "userChats", data.user.uid), {
-      [data.chatId + ".lastMessage"]: {
-        text,
-      },
-      [data.chatId + ".date"]: serverTimestamp(),
-    });
-
-    setText("");
-    setImage(null);
   };
 
   return (
@@ -99,14 +102,20 @@ const Input = () => {
         />
         <div className="emoji">
           <GrEmoji className="icon" onClick={() => setOpen((prev) => !prev)} />
-          <div className="picker">
-            <EmojiPicker open={open} onEmojiClick={handleEmoji} />
-          </div>
+          {open && (
+            <div className="picker">
+              <EmojiPicker onEmojiClick={handleEmoji} />
+            </div>
+          )}
         </div>
         <label htmlFor="file">
           <GrAttachment className="icon" />
         </label>
-        <button onClick={handleSend} className="buttonsend">
+        <button
+          onClick={handleSend}
+          className="buttonsend"
+          disabled={!text && !img}
+        >
           Send
         </button>
       </div>
