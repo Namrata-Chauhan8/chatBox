@@ -25,7 +25,7 @@ const Login = () => {
   return (
     <div className="formContainer">
       <div className="formWrapper">
-        <span className="logo">Chat App</span>
+        <span className="logo"><img src="../chat.png" alt="" style={{width:"20px",height:"18px"}}/>ChatBox</span>
         <span className="title">Login</span>
         <form onSubmit={handleSubmit}>
           <input type="email" placeholder="email" />
