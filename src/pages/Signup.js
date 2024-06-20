@@ -5,6 +5,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { LuImagePlus } from "react-icons/lu";
+import toast from "react-hot-toast";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -52,9 +53,10 @@ const Signup = () => {
           }
         }
       );
+      toast.success("Account created successfully");
       navigate("/login");
     } catch (error) {
-      console.error("Error creating user:", error);
+      toast.error(error.message);
       setErr(true);
     }
   };

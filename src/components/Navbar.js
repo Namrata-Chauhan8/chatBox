@@ -5,6 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { IoMdLogOut } from "react-icons/io";
 import { Tooltip } from "react-tooltip";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     signOut(auth);
+    toast.success("Logout successfully");
     navigate("/login");
   };
 

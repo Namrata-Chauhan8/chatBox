@@ -6,6 +6,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./Style.scss";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -27,6 +28,8 @@ function App() {
   };
 
   return (
+    <>
+    <Toaster />
     <BrowserRouter>
       <Routes>
         <Route path="/">
@@ -57,6 +60,7 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+    </>
   );
 }
 

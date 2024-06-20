@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../Firebase";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [err, setErr] = useState(false);
@@ -14,9 +15,11 @@ const Login = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      toast.success("Login successfully");
       navigate("/");
     } catch (err) {
       setErr(true);
+      toast.error(err.message);
     }
   };
   return (
