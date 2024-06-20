@@ -18,6 +18,14 @@ function App() {
     return children;
   };
 
+  const PublicRoute = ({ children }) => {
+    if (currentUser) {
+      return <Navigate to="/" />;
+    }
+
+    return children;
+  };
+
   return (
     <BrowserRouter>
       <Routes>
@@ -30,8 +38,22 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="login" element={<Login />} />
-          <Route path="signup" element={<Signup />} />
+          <Route
+            path="login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="signup"
+            element={
+              <PublicRoute>
+                <Signup />
+              </PublicRoute>
+            }
+          />
         </Route>
       </Routes>
     </BrowserRouter>
