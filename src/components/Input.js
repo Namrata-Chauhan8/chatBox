@@ -67,12 +67,10 @@ const Input = () => {
       }
       setText("");
       setImage(null);
-      // const sound = new Audio(messageSound);
-      // sound.play();
-      if (data.chatId.slice(0, 7) !== data.user.uid.slice(0, 7)) {
-        const sound = new Audio(messageSound);
-        sound.play();
-      }
+      const sound = new Audio(messageSound);
+      sound.play();
+      
+
       await updateDoc(doc(db, "chats", data.chatId), {
         messages: arrayUnion(messageData),
       });
