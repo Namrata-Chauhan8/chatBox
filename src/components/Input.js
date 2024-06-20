@@ -15,7 +15,7 @@ import { v4 as uuid } from "uuid";
 import EmojiPicker from "emoji-picker-react";
 import { GrEmoji } from "react-icons/gr";
 import toast from "react-hot-toast";
-// import messageSound from "../assets/notification.mp3";
+import messageSound from "../assets/notification.mp3";
 
 const Input = () => {
   const [text, setText] = useState("");
@@ -69,8 +69,10 @@ const Input = () => {
       setImage(null);
       // const sound = new Audio(messageSound);
       // sound.play();
-
-
+      if (data.chatId.slice(0, 7) !== data.user.uid.slice(0, 7)) {
+        const sound = new Audio(messageSound);
+        sound.play();
+      }
       await updateDoc(doc(db, "chats", data.chatId), {
         messages: arrayUnion(messageData),
       });
