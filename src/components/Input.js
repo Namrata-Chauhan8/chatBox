@@ -14,6 +14,8 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { v4 as uuid } from "uuid";
 import EmojiPicker from "emoji-picker-react";
 import { GrEmoji } from "react-icons/gr";
+import toast from "react-hot-toast";
+import messageSound from "../assets/notification.mp3";
 
 const Input = () => {
   const [text, setText] = useState("");
@@ -63,6 +65,11 @@ const Input = () => {
       if (imageUrl) {
         messageData.img = imageUrl;
       }
+      setText("");
+      setImage(null);
+      const sound = new Audio(messageSound);
+      sound.play();
+      
 
       await updateDoc(doc(db, "chats", data.chatId), {
         messages: arrayUnion(messageData),
@@ -77,11 +84,8 @@ const Input = () => {
         [`${data.chatId}.lastMessage`]: { text },
         [`${data.chatId}.date`]: serverTimestamp(),
       });
-
-      setText("");
-      setImage(null);
     } catch (error) {
-      console.error("Error sending message: ", error);
+      toast.error("Error sending message: ", error);
     }
   };
 
