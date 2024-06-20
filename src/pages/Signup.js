@@ -48,7 +48,7 @@ const Signup = () => {
 
             await setDoc(doc(db, "userChats", res.user.uid), {});
           } catch (error) {
-            console.error("Error updating profile or setting document:", error);
+            toast.error("Error updating profile or setting document:", error);
             setErr(true);
           }
         }
