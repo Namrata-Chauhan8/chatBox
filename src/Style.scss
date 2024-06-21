@@ -231,15 +231,25 @@
 
                 .userChatInfo {
                     span {
-                        font-size: 18px;
-                        font-weight: 500;
+                      font-size: 18px;
+                      font-weight: 500;
+                      display: block;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                      white-space: nowrap;
                     }
-
+                  
                     p {
-                        font-size: 14px;
-                        color: lightgray;
+                      font-size: 14px;
+                      color: lightgray;
+                      display: -webkit-box;
+                      -webkit-line-clamp: 1; /* Limit to 1 line */
+                      -webkit-box-orient: vertical;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                      margin-top: 5px; /* Optional: Add spacing between span and p */
                     }
-                }
+                  }
             }
 
         }

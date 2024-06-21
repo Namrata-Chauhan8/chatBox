@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { GrAttachment } from "react-icons/gr";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
@@ -15,7 +15,7 @@ import { v4 as uuid } from "uuid";
 import EmojiPicker from "emoji-picker-react";
 import { GrEmoji } from "react-icons/gr";
 import toast from "react-hot-toast";
-import messageSound from "../assets/notification.mp3";
+// import messageSound from "../assets/notification.mp3";
 
 const Input = () => {
   const [text, setText] = useState("");
@@ -67,9 +67,8 @@ const Input = () => {
       }
       setText("");
       setImage(null);
-      const sound = new Audio(messageSound);
-      sound.play();
-      
+      // const sound = new Audio(messageSound);
+      // sound.play();
 
       await updateDoc(doc(db, "chats", data.chatId), {
         messages: arrayUnion(messageData),
@@ -89,6 +88,16 @@ const Input = () => {
     }
   };
 
+  useEffect(() => {
+    var input = document.getElementById("myInput");
+    input.addEventListener("keypress", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        document.getElementById("buttonsend").click();
+      }
+    });
+  }, []);
+
   return (
     <div className="input">
       <input
@@ -96,6 +105,7 @@ const Input = () => {
         placeholder="Type something..."
         onChange={(e) => setText(e.target.value)}
         value={text}
+        id="myInput"
       />
       <div className="send">
         <input
@@ -119,6 +129,7 @@ const Input = () => {
           onClick={handleSend}
           className="buttonsend"
           disabled={!text && !img}
+          id="buttonsend"
         >
           Send
         </button>

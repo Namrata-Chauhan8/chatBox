@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
 import moment from "moment";
-import ReceiveSound from "../assets/receive.mp3";
+import ReceiveSound from "../assets/notification.mp3";
 
 const Message = ({ message }) => {
   const { currentUser } = useContext(AuthContext);
@@ -11,14 +11,18 @@ const Message = ({ message }) => {
 
   const ref = useRef();
 
+  // Effect for scrolling into view
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
+  }, [message]);
 
-    if (message.senderId === currentUser.uid) {
+  // Effect for playing sound on receiving a message
+  useEffect(() => {
+    if (message.senderId !== currentUser.uid) {
       const audio = new Audio(ReceiveSound);
       audio.play();
     }
-  }, [message]);
+  }, []);
 
   return (
     <div
